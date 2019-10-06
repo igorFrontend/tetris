@@ -34,11 +34,13 @@ interface IState {
   occupiedCell: Coords
 }
 
+export type State = 'run' | 'pause' | 'end'
+
 const rowsArr = Array(rows).fill(null)
 const cellArr = Array(collumnsPerRows).fill(null)
 
 interface IProps {
-  run: boolean
+  state: State
   figure: Coords[]
   onFinishStep: (linesCount: number) => void
   onFinishGame: () => void
@@ -68,13 +70,13 @@ export class Space extends React.PureComponent<IProps, IState> {
   }
 
   componentDidUpdate(prevProps: IProps) {
-    if (prevProps.run !== this.props.run && this.props.run) {
+    if (prevProps.state === 'end' && this.props.state === 'run') {
       this.setState(defaultState)
     }
   }
 
   tick = () => {
-    if (this.props.run) {
+    if (this.props.state === 'run') {
       this.moveDown()
     }
   }

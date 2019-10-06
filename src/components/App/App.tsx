@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import styled from 'styled-components'
 
-import { Coords, Space } from '../Space/Space'
+import { Coords, Space, State } from '../Space/Space'
 
 const AppRoot = styled.div`
   display: flex;
@@ -30,6 +30,12 @@ const Reset = styled.button`
   color: #000;
 `
 
+const Start = styled.button`
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #000;
+`
+
 const NextFigure = styled.div`
   margin-bottom: 8px;
   width: 120px;
@@ -39,7 +45,7 @@ const Row = styled.div`
   display: flex;
 `
 
-const Cell = styled.div<{isFigure: boolean}>`
+const Cell = styled.div<{ isFigure: boolean }>`
   position: relative;
   width: 30px;
   height: 30px;
@@ -83,46 +89,46 @@ const pointsTable = [0, 100, 300, 700, 1500]
 
 const figureList: IFigureList = {
   line: [
-    [ {x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 0, y: 3} ],
-    [ {x: -1, y: 1}, {x: 0, y: 1}, {x: 1, y: 1}, {x: 2, y: 1} ],
-    [ {x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 0, y: 3} ],
-    [ {x: -1, y: 1}, {x: 0, y: 1}, {x: 1, y: 1}, {x: 2, y: 1} ],
+    [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }, { x: 0, y: 3 }],
+    [{ x: -1, y: 1 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }],
+    [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }, { x: 0, y: 3 }],
+    [{ x: -1, y: 1 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }],
   ],
   flash: [
-    [ {x: 0, y: 1}, {x: 1, y: 1}, {x: 1, y: 0}, {x: 2, y: 0} ],
-    [ {x: 1, y: 0}, {x: 1, y: 1}, {x: 2, y: 1}, {x: 2, y: 2} ],
-    [ {x: 0, y: 1}, {x: 1, y: 1}, {x: 1, y: 0}, {x: 2, y: 0} ],
-    [ {x: 1, y: 0}, {x: 1, y: 1}, {x: 2, y: 1}, {x: 2, y: 2} ],
+    [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 1, y: 0 }, { x: 2, y: 0 }],
+    [{ x: 1, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 2, y: 2 }],
+    [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 1, y: 0 }, { x: 2, y: 0 }],
+    [{ x: 1, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 2, y: 2 }],
   ],
   flashReverse: [
-    [ {x: 0, y: 0}, {x: 1, y: 0}, {x: 1, y: 1}, {x: 2, y: 1} ],
-    [ {x: 1, y: 0}, {x: 1, y: 1}, {x: 0, y: 1}, {x: 0, y: 2} ],
-    [ {x: 0, y: 0}, {x: 1, y: 0}, {x: 1, y: 1}, {x: 2, y: 1} ],
-    [ {x: 1, y: 0}, {x: 1, y: 1}, {x: 0, y: 1}, {x: 0, y: 2} ],
+    [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 1 }],
+    [{ x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }, { x: 0, y: 2 }],
+    [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 1 }],
+    [{ x: 1, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }, { x: 0, y: 2 }],
   ],
   cube: [
-    [ {x: 0, y: 0}, {x: 1, y: 1}, {x: 0, y: 1}, {x: 1, y: 0} ],
-    [ {x: 0, y: 0}, {x: 1, y: 1}, {x: 0, y: 1}, {x: 1, y: 0} ],
-    [ {x: 0, y: 0}, {x: 1, y: 1}, {x: 0, y: 1}, {x: 1, y: 0} ],
-    [ {x: 0, y: 0}, {x: 1, y: 1}, {x: 0, y: 1}, {x: 1, y: 0} ],
+    [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }, { x: 1, y: 0 }],
+    [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }, { x: 1, y: 0 }],
+    [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }, { x: 1, y: 0 }],
+    [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 0, y: 1 }, { x: 1, y: 0 }],
   ],
   foot: [
-    [ {x: 0, y: 0}, {x: 0, y: 1}, {x: 1, y: 0}, {x: 2, y: 0} ],
-    [ {x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 1, y: 2} ],
-    [ {x: 0, y: 1}, {x: 1, y: 1}, {x: 2, y: 1}, {x: 2, y: 0} ],
-    [ {x: 0, y: 0}, {x: 1, y: 0}, {x: 1, y: 1}, {x: 1, y: 2} ],
+    [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 0 }, { x: 2, y: 0 }],
+    [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }, { x: 1, y: 2 }],
+    [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 2, y: 0 }],
+    [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 }],
   ],
   footReverse: [
-    [ {x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}, {x: 2, y: 1} ],
-    [ {x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 1, y: 0} ],
-    [ {x: 0, y: 0}, {x: 0, y: 1}, {x: 1, y: 1}, {x: 2, y: 1} ],
-    [ {x: 1, y: 0}, {x: 1, y: 1}, {x: 1, y: 2}, {x: 0, y: 2} ],
+    [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 2, y: 1 }],
+    [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }, { x: 1, y: 0 }],
+    [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }],
+    [{ x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 }, { x: 0, y: 2 }],
   ],
   t: [
-    [ {x: 0, y: 0}, {x: 1, y: 0}, {x: 2, y: 0}, {x: 1, y: 1} ],
-    [ {x: 1, y: 0}, {x: 1, y: 1}, {x: 1, y: 2}, {x: 0, y: 1} ],
-    [ {x: 0, y: 1}, {x: 1, y: 1}, {x: 2, y: 1}, {x: 1, y: 0} ],
-    [ {x: 0, y: 0}, {x: 0, y: 1}, {x: 0, y: 2}, {x: 1, y: 1} ],
+    [{ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }, { x: 1, y: 1 }],
+    [{ x: 1, y: 0 }, { x: 1, y: 1 }, { x: 1, y: 2 }, { x: 0, y: 1 }],
+    [{ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }, { x: 1, y: 0 }],
+    [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }, { x: 1, y: 1 }],
   ],
 }
 
@@ -134,7 +140,7 @@ export const App = () => {
   const [figure, setFigure] = React.useState(getRandomFigure())
   const [nextFigure, setNextFigure] = React.useState(getRandomFigure())
   const [points, setPoints] = React.useState(0)
-  const [runGame, setRunGame] = React.useState(true)
+  const [stateGame, setStateGame] = React.useState<State>('pause')
 
   const handleFinishStep = React.useCallback((linesCount: number) => {
     setFigure(nextFigure)
@@ -143,14 +149,14 @@ export const App = () => {
   }, [points, pointsTable, nextFigure, setFigure, setNextFigure])
 
   const handleFinishGame = React.useCallback(() => {
-    setRunGame(false)
+    setStateGame('end')
   }, [])
 
   const nextFigureMax = Math.max(...nextFigure[0].map(point => point.y))
   return <AppRoot>
     <Space
       figure={figure}
-      run={runGame}
+      state={stateGame}
       onFinishStep={handleFinishStep}
       onFinishGame={handleFinishGame}
     />
@@ -159,16 +165,16 @@ export const App = () => {
       <InfoItem>Следующая фигура</InfoItem>
       <NextFigure>
         {cellArr.map((_row, rowIndex) => <Row key={rowIndex}>
-            {cellArr.map((_cell, cellIndex) =>
-              <Cell
-                key={cellIndex}
-                isFigure={!!nextFigure[0].find(point => nextFigureMax - point.y === rowIndex && point.x === cellIndex)}
-              />
-            )}
-          </Row>
+          {cellArr.map((_cell, cellIndex) =>
+            <Cell
+              key={cellIndex}
+              isFigure={!!nextFigure[0].find(point => nextFigureMax - point.y === rowIndex && point.x === cellIndex)}
+            />
+          )}
+        </Row>
         )}
       </NextFigure>
-      {!runGame && (
+      {stateGame === 'end' && (
         <InfoReset>
           Игра окончена!
           <br />
@@ -176,13 +182,15 @@ export const App = () => {
             type='button'
             onClick={() => {
               setPoints(0)
-              setRunGame(true)
+              setStateGame('run')
             }}
           >
             Начать заново
           </Reset>
         </InfoReset>
       )}
+      {stateGame === 'pause' && <Start onClick={() => setStateGame('run')}>Старт</Start>}
+      {stateGame === 'run' && <Start onClick={() => setStateGame('pause')}>Пауза</Start>}
     </Info>
   </AppRoot>
 }
